@@ -1,0 +1,295 @@
+#!/usr/bin/env python
+import urllib,urllib2,re,time,datetime,os,sys
+class bcolors:
+	HEADER = '\033[95m'
+	OKBLUE = '\033[94m'
+	OKGREEN = '\033[92m'
+	WARNING = '\033[93m'
+	FAIL = '\033[91m'
+	ENDC = '\033[0m'
+	BOLD = '\033[1m'
+	UNDERLINE = '\033[4m'
+def cls():
+	os.system('cls' if os.name=='nt' else 'clear')
+def dl(link,nname):
+	link=link+"/archive/master.zip"
+	try:
+		urllib2.urlopen(link)
+		print "Ok"
+		print "Download..."
+		fl=urllib.urlopen(link)
+		cont=fl.read()
+		slink=link.replace("/","\n")
+		num=0
+		for line in slink.splitlines():
+			num+=1
+		num2=0
+		for line in slink.splitlines():
+			num2+=1
+			if num2==num:
+				name=line
+		nname=nname+"-"+name
+		a=open(nname,"w")
+		a.write(cont)
+		a.close()
+		print bcolors.BOLD+bcolors.OKGREEN+"Saved in",nname+bcolors.ENDC
+	except urllib2.HTTPError, e:
+		print "Error:       "
+		print(e.code)
+	except urllib2.URLError, e:
+		print "Error:       "
+		print(e.args)
+rows, columns = os.popen('stty size', 'r').read().split()
+rows=int(rows)
+columns=int(columns)
+e1=0
+while e1==0:
+	cls()
+	if columns>=58:
+		sp=(columns-58)/2
+		print bcolors.BOLD+bcolors.OKBLUE+" "*sp+"              ,,                                 ,,"
+		print " "*sp+"  .g8'''bgd   db   mm   `7MMF'  `7MMF'  v 1.0   *MM"
+		print " "*sp+".dP'     `M        MM     MM      MM             MM"
+		print " "*sp+"dM'       ` `7MM mmMMmm   MM      MM `7MM  `7MM  MM,dMMb."
+		print " "*sp+"MM            MM   MM     MMmmmmmmMM   MM    MM  MM    `Mb"
+		print " "*sp+"MM.    `7MMF' MM   MM     MM      MM   MM    MM  MM     M8"
+		print " "*sp+"`Mb.     MM   MM   MM     MM      MM   MM    MM  MM.   ,M9"
+		print " "*sp+"  `'bmmmdPY .JMML. `Mbmo.JMML.  .JMML. `Mbod'YML.P^YbmdP'"+bcolors.ENDC
+	else:
+		print "\n"*((rows/2)-2)
+		cstr="(v 1.0) Search"
+		print " "*((columns/2)-(len(cstr)/2))+cstr
+	q=raw_input()
+	link="https://github.com"
+	url=link+"/search?q="+q
+	cls()
+	print "Connecting...\r",
+	sys.stdout.flush()
+	try:
+		urllib2.urlopen(url)
+		site=urllib.urlopen(url)
+		page=site.read()
+		allresnm="0"
+		r=0
+		for line in page.splitlines():
+			if r==1:
+				allresnm=''.join(filter(str.isdigit,line))
+				break
+			if '<span class="d-inline-block v-align-middle">' in line:
+				r=1
+			elif 'repository results' in line:
+				allresnm=''.join(filter(str.isdigit,line))
+				break
+		links=re.findall(r'<a(.*?)</a>',page)
+		results=""
+		reslink=""
+		p=1
+		num=0
+		while num<len(links):
+			if 'class="v-align-middle"' in links[num]:
+				if results=="":
+					results="".join(re.findall(r'>(.*?)<',(str(links[num])+"<")))
+				else:
+					results=results+","+"".join(re.findall(r'>(.*?)<',(str(links[num])+"<")))
+				if reslink=="":
+					reslink="".join(re.findall(r'href="(.*?)"',(str(links[num]))))
+				else:
+					reslink=reslink+","+"".join(re.findall(r'href="(.*?)"',(str(links[num]))))
+			num+=1
+		results=results.replace("&#x2F;","/")
+		results=results.split(",")
+		reslink=reslink.split(",")
+		resnum=0
+		e2=0
+		while e2==0:
+			if allresnm!="0":
+				print bcolors.BOLD+bcolors.OKGREEN+allresnm,"results for '"+q+"'"+bcolors.ENDC
+			else:
+				print bcolors.BOLD+bcolors.OKGREEN+"Searching for '"+q+"'"+bcolors.ENDC
+			resnum=0
+			while resnum<len(results):
+				print str(resnum)+" - "+results[resnum]
+				resnum+=1
+			if '<div class="pagination" data-pjax="true">' in page:
+				print "< page",p,">"
+			e=0
+			while e==0:
+				rq=raw_input("Num: ")
+				try:
+					if int(rq)<=resnum:
+						e=1
+					else:
+						print rq,"not valid."
+				except:
+					if rq==">":
+						if '<div class="pagination" data-pjax="true">' in page:
+							p+=1
+							chp=urllib.urlopen(url+"&p="+str(p))
+							chp=chp.read()
+							chplk=re.findall(r'<a(.*?)</a>',chp)
+							results=[]
+							resnum=0
+							num2=0
+							while num2<len(chplk):
+								if 'class="v-align-middle"' in chplk[num2]:
+									results.append("".join(re.findall(r'>(.*?)<',(str(chplk[num2])+"<"))))
+									reslink.append("".join(re.findall(r'href="(.*?)"',(str(links[num2])))))
+								num2+=1
+							cls()
+							if allresnm!="0":
+								print bcolors.BOLD+bcolors.OKGREEN+allresnm,"results for '"+q+"'"+bcolors.ENDC
+							else:
+								print bcolors.BOLD+bcolors.OKGREEN+"Searching for '"+q+"'"+bcolors.ENDC
+							while resnum<len(results):
+								print str(resnum)+" - "+results[resnum]
+								resnum+=1
+							if '<div class="pagination" data-pjax="true">' in chp:
+								print "< page",p,">"
+					elif rq=="<":
+						if '<div class="pagination" data-pjax="true">' in page:
+							if p>1:
+								p-=1
+								chp=urllib.urlopen(url+"&p="+str(p))
+								chp=chp.read()
+								chplk=re.findall(r'<a(.*?)</a>',chp)
+								results=[]
+								resnum=0
+								num2=0
+								while num2<len(chplk):
+									if 'class="v-align-middle"' in chplk[num2]:
+										results.append("".join(re.findall(r'>(.*?)<',(str(chplk[num2])+"<"))))
+										reslink.append("".join(re.findall(r'href="(.*?)"',(str(links[num2])))))
+									num2+=1
+								cls()
+								if allresnm!="0":
+									print bcolors.BOLD+bcolors.OKGREEN+allresnm,"results for '"+q+"'"+bcolors.ENDC
+								else:
+									print bcolors.BOLD+bcolors.OKGREEN+"Searching for '"+q+"'"+bcolors.ENDC
+								while resnum<len(results):
+									print str(resnum)+" - "+results[resnum]
+									resnum+=1
+								if '<div class="pagination" data-pjax="true">' in chp:
+									print "< page",p,">"
+							else:
+								print rq,"not valid."
+					elif rq=="s":
+						e2=1
+						e=1
+					elif rq.startswith("d "):
+						rq.split(" ")
+						n=results[int(rq[2])]
+						n=n.split("/")
+						n=n[1]
+						dl(link+reslink[int(rq[2])],n)
+					elif "HELP" in rq.upper():
+						print "help       show this\nexit()     exit\ns          new search\n<          page-1\n>          page+1\nd $num     download $num"
+					elif rq=="exit()":
+						print "Exit..."
+						sys.exit()
+					elif "EXIT" in rq.upper() or "QUIT" in rq.upper():
+						print "exit() for quit."
+					else:
+						print rq,"not valid."
+			if e2==0:
+				rq=int(rq)
+				cls()
+				print "Connecting...\r",
+				sys.stdout.flush()
+				try:
+					urllib2.urlopen(link+reslink[rq])
+					site2=urllib.urlopen(link+reslink[rq])
+					page2=site2.read()
+					fn=""
+					fnlk=""
+					for line in page2.splitlines():
+						if 'class="js-navigation-open"' in line:
+							if fn=="":
+								fn="".join(re.findall(r'title="(.*?)"',line))
+							else:
+								fn=fn+","+"".join(re.findall(r'title="(.*?)"',line))
+							if fnlk=="":
+								fnlk="".join(re.findall(r'href="(.*?)"',line))
+							else:
+								fnlk=fnlk+","+"".join(re.findall(r'href="(.*?)"',line))
+					fn=fn.split(",")
+					fnlk=fnlk.split(",")
+					e3=0
+					while e3==0:
+						fnnum=0
+						print bcolors.BOLD+bcolors.OKGREEN+results[rq]+bcolors.ENDC
+						while fnnum<len(fn):
+							print str(fnnum)+" - "+fn[fnnum]
+							fnnum+=1
+						fnnum-=1
+						print "< return"
+						e=0
+						while e==0:
+							fq=raw_input("Num: ")
+							try:
+								if int(fq)<=fnnum:
+									e=1
+								else:
+									print fq,"not valid."
+							except:
+								if fq=="<":
+									e3=1
+									e=1
+									cls()
+								elif fq=="exit()":
+									print "Exit..."
+									sys.exit()
+								elif "EXIT" in fq.upper() or "QUIT" in fq.upper():
+									print "exit() for quit."
+								else:
+									print fq,"not valid."
+						if e3==0:
+							fq=int(fq)
+							cls()
+							print "Connecting...\r",
+							sys.stdout.flush()
+							try:
+								urllib2.urlopen((link+fnlk[fq]).replace("/blob","").replace("github","raw.githubusercontent"))
+								fc=urllib.urlopen((link+fnlk[fq]).replace("/blob","").replace("github","raw.githubusercontent"))
+								fc=fc.read()
+								e4=0
+								while e4==0:
+									print bcolors.BOLD+bcolors.OKGREEN+results[rq]+"/"+fn[fq]+bcolors.ENDC
+									print fc
+									print "< return   d download"
+									e=0
+									while e==0:
+										cq=raw_input()
+										if cq=="<":
+											e4=1
+											e=1
+											cls()
+										elif cq=="d":
+											#write in file
+											nc=open(fn[fq],"w")
+											nc.write(fc)
+											nc.close()
+											print bcolors.BOLD+bcolors.OKGREEN+"Saved in",fn[fq]+bcolors.ENDC
+											time.sleep(3)
+											e4=1
+											e=1
+											cls()
+										else:
+											print cq,"not valid."
+							except urllib2.HTTPError, e:
+								print "Error:       "
+								print(e.code)
+							except urllib2.URLError, e:
+								print "Error:       "
+								print(e.args)
+				except urllib2.HTTPError, e:
+					print "Error:       "
+					print(e.code)
+				except urllib2.URLError, e:
+					print "Error:       "
+					print(e.args)
+	except urllib2.HTTPError, e:
+		print "Error:       "
+		print(e.code)
+	except urllib2.URLError, e:
+		print "Error:       "
+		print(e.args)
