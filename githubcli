@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import urllib,urllib2,re,time,datetime,os,sys
 class bcolors:
 	HEADER = '\033[95m'
@@ -9,6 +10,8 @@ class bcolors:
 	ENDC = '\033[0m'
 	BOLD = '\033[1m'
 	UNDERLINE = '\033[4m'
+	BL = '\033[30m'
+	BW = '\033[47m'
 def cls():
 	os.system('cls' if os.name=='nt' else 'clear')
 def dl(link,nname):
@@ -42,14 +45,14 @@ def dl(link,nname):
 rows, columns = os.popen('stty size', 'r').read().split()
 rows=int(rows)
 columns=int(columns)
-#v 0.1#
+#v 0.2#
 e1=0
 while e1==0:
 	cls()
 	if columns>=58:
 		sp=(columns-58)/2
 		print bcolors.BOLD+bcolors.OKBLUE+" "*sp+"              ,,                                 ,,"
-		print " "*sp+"  .g8'''bgd   db   mm   `7MMF'  `7MMF'  v 0.1   *MM"
+		print " "*sp+"  .g8'''bgd   db   mm   `7MMF'  `7MMF'  v 0.2   *MM"
 		print " "*sp+".dP'     `M        MM     MM      MM             MM"
 		print " "*sp+"dM'       ` `7MM mmMMmm   MM      MM `7MM  `7MM  MM,dMMb."
 		print " "*sp+"MM            MM   MM     MMmmmmmmMM   MM    MM  MM    `Mb"
@@ -58,7 +61,7 @@ while e1==0:
 		print " "*sp+"  `'bmmmdPY .JMML. `Mbmo.JMML.  .JMML. `Mbod'YML.P^YbmdP'"+bcolors.ENDC
 	else:
 		print "\n"*((rows/2)-2)
-		cstr="(v 0.1) Search"
+		cstr="(v 0.2) Search"
 		print " "*((columns/2)-(len(cstr)/2))+cstr
 	q=raw_input()
 	link="https://github.com"
@@ -101,6 +104,19 @@ while e1==0:
 		results=results.split(",")
 		reslink=reslink.split(",")
 		resnum=0
+		lan=re.findall(r'<div class="d-table-cell col-2 text-gray pt-2">(.*?)</div>',page.replace("\n",""))
+		num=0
+		while num<len(lan):
+			r=re.findall(r'<(.*?)>',lan[num])
+			lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
+			num+=1
+		st=re.findall(r'<a class="muted-link"(.*?)</a>',page.replace("\n",""))
+		num=0
+		while num<len(st):
+			st[num]="<"+st[num]
+			r=re.findall(r'<(.*?)>',st[num])
+			st[num]=st[num].replace(r[0],"").replace(r[1],"").replace(r[2],"").replace(r[3],"").replace("<","").replace(">","").replace(" ","")
+			num+=1
 		e2=0
 		while e2==0:
 			if allresnm!="0":
@@ -109,7 +125,13 @@ while e1==0:
 				print bcolors.BOLD+bcolors.OKGREEN+"Searching for '"+q+"'"+bcolors.ENDC
 			resnum=0
 			while resnum<len(results):
-				print str(resnum)+" - "+results[resnum]
+				l1=len(str(resnum)+" - "+results[resnum])
+				l2=len(lan[resnum])
+				l3=len(st[resnum])
+				if resnum%2==0:
+					print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]
+				else:
+					print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]+bcolors.ENDC
 				resnum+=1
 			if '<div class="pagination" data-pjax="true">' in page:
 				print "< page",p,">"
@@ -136,13 +158,33 @@ while e1==0:
 									results.append("".join(re.findall(r'>(.*?)<',(str(chplk[num2])+"<"))))
 									reslink.append("".join(re.findall(r'href="(.*?)"',(str(links[num2])))))
 								num2+=1
+							lan=[]
+							lan=re.findall(r'<div class="d-table-cell col-2 text-gray pt-2">(.*?)</div>',chp.replace("\n",""))
+							num=0
+							while num<len(lan):
+								r=re.findall(r'<(.*?)>',lan[num])
+								lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
+								num+=1
+							st=re.findall(r'<a class="muted-link"(.*?)</a>',chp.replace("\n",""))
+							num=0
+							while num<len(st):
+								st[num]="<"+st[num]
+								r=re.findall(r'<(.*?)>',st[num])
+								st[num]=st[num].replace(r[0],"").replace(r[1],"").replace(r[2],"").replace(r[3],"").replace("<","").replace(">","").replace(" ","")
+								num+=1
 							cls()
 							if allresnm!="0":
 								print bcolors.BOLD+bcolors.OKGREEN+allresnm,"results for '"+q+"'"+bcolors.ENDC
 							else:
 								print bcolors.BOLD+bcolors.OKGREEN+"Searching for '"+q+"'"+bcolors.ENDC
 							while resnum<len(results):
-								print str(resnum)+" - "+results[resnum]
+								l1=len(str(resnum)+" - "+results[resnum])
+								l2=len(lan[resnum])
+								l3=len(st[resnum])
+								if resnum%2==0:
+									print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]
+								else:
+									print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]+bcolors.ENDC
 								resnum+=1
 							if '<div class="pagination" data-pjax="true">' in chp:
 								print "< page",p,">"
@@ -161,13 +203,33 @@ while e1==0:
 										results.append("".join(re.findall(r'>(.*?)<',(str(chplk[num2])+"<"))))
 										reslink.append("".join(re.findall(r'href="(.*?)"',(str(links[num2])))))
 									num2+=1
+									lan=[]
+									lan=re.findall(r'<div class="d-table-cell col-2 text-gray pt-2">(.*?)</div>',chp.replace("\n",""))
+									num=0
+									while num<len(lan):
+										r=re.findall(r'<(.*?)>',lan[num])
+										lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
+										num+=1
+									st=re.findall(r'<a class="muted-link"(.*?)</a>',page.replace("\n",""))
+									num=0
+									while num<len(st):
+										st[num]="<"+st[num]
+										r=re.findall(r'<(.*?)>',st[num])
+										st[num]=st[num].replace(r[0],"").replace(r[1],"").replace(r[2],"").replace(r[3],"").replace("<","").replace(">","").replace(" ","")
+										num+=1
 								cls()
 								if allresnm!="0":
 									print bcolors.BOLD+bcolors.OKGREEN+allresnm,"results for '"+q+"'"+bcolors.ENDC
 								else:
 									print bcolors.BOLD+bcolors.OKGREEN+"Searching for '"+q+"'"+bcolors.ENDC
 								while resnum<len(results):
-									print str(resnum)+" - "+results[resnum]
+									l1=len(str(resnum)+" - "+results[resnum])
+									l2=len(lan[resnum])
+									l3=len(st[resnum])
+									if resnum%2==0:
+										print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]
+									else:
+										print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]+bcolors.ENDC
 									resnum+=1
 								if '<div class="pagination" data-pjax="true">' in chp:
 									print "< page",p,">"
