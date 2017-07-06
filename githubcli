@@ -42,13 +42,14 @@ def dl(link,nname):
 rows, columns = os.popen('stty size', 'r').read().split()
 rows=int(rows)
 columns=int(columns)
+#v 0.1#
 e1=0
 while e1==0:
 	cls()
 	if columns>=58:
 		sp=(columns-58)/2
 		print bcolors.BOLD+bcolors.OKBLUE+" "*sp+"              ,,                                 ,,"
-		print " "*sp+"  .g8'''bgd   db   mm   `7MMF'  `7MMF'  v 1.0   *MM"
+		print " "*sp+"  .g8'''bgd   db   mm   `7MMF'  `7MMF'  v 0.1   *MM"
 		print " "*sp+".dP'     `M        MM     MM      MM             MM"
 		print " "*sp+"dM'       ` `7MM mmMMmm   MM      MM `7MM  `7MM  MM,dMMb."
 		print " "*sp+"MM            MM   MM     MMmmmmmmMM   MM    MM  MM    `Mb"
@@ -57,7 +58,7 @@ while e1==0:
 		print " "*sp+"  `'bmmmdPY .JMML. `Mbmo.JMML.  .JMML. `Mbod'YML.P^YbmdP'"+bcolors.ENDC
 	else:
 		print "\n"*((rows/2)-2)
-		cstr="(v 1.0) Search"
+		cstr="(v 0.1) Search"
 		print " "*((columns/2)-(len(cstr)/2))+cstr
 	q=raw_input()
 	link="https://github.com"

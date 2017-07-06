@@ -1,4 +1,4 @@
-import urllib,urllib2,sys,platform,os
+import urllib,urllib2,sys,platform,os,re
 class bcolors:
 	HEADER = '\033[95m'
 	OKGREEN = '\033[92m'
@@ -10,8 +10,8 @@ code=ghc.read()
 ghc.close()
 ln=1
 for line in code.splitlines():
-	if ln==51:
-		line=''.join(filter(str.isdigit,line))
+	if ln==45:
+		line=''.join(re.findall(r'#(.*?)#',line)).replace("v ","")
 		av=line
 		break
 	else:
