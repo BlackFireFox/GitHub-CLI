@@ -108,7 +108,13 @@ while e1==0:
 		num=0
 		while num<len(lan):
 			r=re.findall(r'<(.*?)>',lan[num])
-			lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
+			try:
+				lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
+			except:
+				try:
+					lan[num]=lan[num].replace(r[0],"").replace("<","").replace(">","").replace(" ","")
+				except:
+					lan[num]=lan[num].replace("<","").replace(">","").replace(" ","")
 			num+=1
 		st=re.findall(r'<a class="muted-link"(.*?)</a>',page.replace("\n",""))
 		num=0
@@ -127,11 +133,16 @@ while e1==0:
 			while resnum<len(results):
 				l1=len(str(resnum)+" - "+results[resnum])
 				l2=len(lan[resnum])
-				l3=len(st[resnum])
+				try:
+					l3=len(st[resnum])
+					s=st[resnum]
+				except:
+					l3=4
+					s="Err."
 				if resnum%2==0:
-					print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]
+					print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s
 				else:
-					print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]+bcolors.ENDC
+					print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s+bcolors.ENDC
 				resnum+=1
 			if '<div class="pagination" data-pjax="true">' in page:
 				print "< page",p,">"
@@ -163,7 +174,13 @@ while e1==0:
 							num=0
 							while num<len(lan):
 								r=re.findall(r'<(.*?)>',lan[num])
-								lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
+								try:
+									lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
+								except:
+									try:
+										lan[num]=lan[num].replace(r[0],"").replace("<","").replace(">","").replace(" ","")
+									except:
+										lan[num]=lan[num].replace("<","").replace(">","").replace(" ","")
 								num+=1
 							st=re.findall(r'<a class="muted-link"(.*?)</a>',chp.replace("\n",""))
 							num=0
@@ -180,11 +197,16 @@ while e1==0:
 							while resnum<len(results):
 								l1=len(str(resnum)+" - "+results[resnum])
 								l2=len(lan[resnum])
-								l3=len(st[resnum])
+								try:
+									l3=len(st[resnum])
+									s=st[resnum]
+								except:
+									l3=4
+									s="Err."
 								if resnum%2==0:
-									print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]
+									print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s
 								else:
-									print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]+bcolors.ENDC
+									print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s+bcolors.ENDC
 								resnum+=1
 							if '<div class="pagination" data-pjax="true">' in chp:
 								print "< page",p,">"
@@ -208,7 +230,13 @@ while e1==0:
 									num=0
 									while num<len(lan):
 										r=re.findall(r'<(.*?)>',lan[num])
-										lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
+										try:
+											lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
+										except:
+											try:
+												lan[num]=lan[num].replace(r[0],"").replace("<","").replace(">","").replace(" ","")
+											except:
+												lan[num]=lan[num].replace("<","").replace(">","").replace(" ","")
 										num+=1
 									st=re.findall(r'<a class="muted-link"(.*?)</a>',page.replace("\n",""))
 									num=0
@@ -225,11 +253,16 @@ while e1==0:
 								while resnum<len(results):
 									l1=len(str(resnum)+" - "+results[resnum])
 									l2=len(lan[resnum])
-									l3=len(st[resnum])
+									try:
+										l3=len(st[resnum])
+										s=st[resnum]
+									except:
+										l3=4
+										s="Err."
 									if resnum%2==0:
-										print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]
+										print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s
 									else:
-										print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",st[resnum]+bcolors.ENDC
+										print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s+bcolors.ENDC
 									resnum+=1
 								if '<div class="pagination" data-pjax="true">' in chp:
 									print "< page",p,">"
