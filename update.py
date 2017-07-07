@@ -11,8 +11,7 @@ ghc.close()
 ln=1
 for line in code.splitlines():
 	if ln==3:
-		line=''.join(re.findall(r'#(.*?)#',line)).replace("v ","")
-		av=line
+		av=''.join(re.findall(r'#(.*?)#',line)).replace("v ","")
 		break
 	else:
 		ln=ln+1
@@ -57,8 +56,9 @@ try:
 						sys.exit()
 					else:
 						print "Error. Retry."
-		else:
-			ln+=1
+		elif ln>3:
+			break
+		ln+=1
 except urllib2.HTTPError, e:
 	print "Error:"
 	print(e.code)
