@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#v 0.3#
 import urllib,urllib2,re,time,datetime,os,sys
 class bcolors:
 	HEADER = '\033[95m'
@@ -45,7 +46,6 @@ def dl(link,nname):
 rows, columns = os.popen('stty size', 'r').read().split()
 rows=int(rows)
 columns=int(columns)
-#v 0.2#
 e1=0
 while e1==0:
 	cls()
@@ -307,6 +307,9 @@ while e1==0:
 								fnlk="".join(re.findall(r'href="(.*?)"',line))
 							else:
 								fnlk=fnlk+","+"".join(re.findall(r'href="(.*?)"',line))
+							if "README" in "".join(re.findall(r'title="(.*?)"',line)).upper():
+								rm="".join(re.findall(r'title="(.*?)"',line))
+								rmlk="".join(re.findall(r'href="(.*?)"',line))
 					fn=fn.split(",")
 					fnlk=fnlk.split(",")
 					e3=0
@@ -317,7 +320,7 @@ while e1==0:
 							print str(fnnum)+" - "+fn[fnnum]
 							fnnum+=1
 						fnnum-=1
-						print "< return"
+						print "< return   d download   r readme"
 						e=0
 						while e==0:
 							fq=raw_input("Num: ")
@@ -331,6 +334,12 @@ while e1==0:
 									e3=1
 									e=1
 									cls()
+								elif fq=="d":
+									n=results[rq].split("/")
+									n=n[1]
+									dl(link+"/"+results[rq],n)
+								elif fq=="r":
+									e=1
 								elif fq=="exit()":
 									print "Exit..."
 									sys.exit()
@@ -339,17 +348,23 @@ while e1==0:
 								else:
 									print fq,"not valid."
 						if e3==0:
-							fq=int(fq)
+							if fq!="r":
+								fq=int(fq)
+								f=fn[fq]
+								fl=fnlk[fq]
+							else:
+								f=rm
+								fl=rmlk
 							cls()
 							print "Connecting...\r",
 							sys.stdout.flush()
 							try:
-								urllib2.urlopen((link+fnlk[fq]).replace("/blob","").replace("github","raw.githubusercontent"))
-								fc=urllib.urlopen((link+fnlk[fq]).replace("/blob","").replace("github","raw.githubusercontent"))
+								urllib2.urlopen((link+fl).replace("/blob","").replace("github","raw.githubusercontent"))
+								fc=urllib.urlopen((link+fl).replace("/blob","").replace("github","raw.githubusercontent"))
 								fc=fc.read()
 								e4=0
 								while e4==0:
-									print bcolors.BOLD+bcolors.OKGREEN+results[rq]+"/"+fn[fq]+bcolors.ENDC
+									print bcolors.BOLD+bcolors.OKGREEN+results[rq]+"/"+f+bcolors.ENDC
 									print fc
 									print "< return   d download"
 									e=0
@@ -361,10 +376,10 @@ while e1==0:
 											cls()
 										elif cq=="d":
 											#write in file
-											nc=open(fn[fq],"w")
+											nc=open(f,"w")
 											nc.write(fc)
 											nc.close()
-											print bcolors.BOLD+bcolors.OKGREEN+"Saved in",fn[fq]+bcolors.ENDC
+											print bcolors.BOLD+bcolors.OKGREEN+"Saved in",f+bcolors.ENDC
 											time.sleep(3)
 											e4=1
 											e=1

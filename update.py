@@ -10,22 +10,23 @@ code=ghc.read()
 ghc.close()
 ln=1
 for line in code.splitlines():
-	if ln==45:
+	if ln==3:
 		line=''.join(re.findall(r'#(.*?)#',line)).replace("v ","")
 		av=line
 		break
 	else:
 		ln=ln+1
-vl="https://raw.githubusercontent.com/BlackFireFox/GitHub-CLI/master/version.html"
+vl="https://raw.githubusercontent.com/BlackFireFox/GitHub-CLI/master/githubcli"
 print "Connecting..."
 try:
 	urllib2.urlopen(vl)
 	print "Success."
 	site=urllib.urlopen(vl)
 	page=site.read()
-	page=page.replace(" ","\n").replace("<","\n").replace(">","\n")
+	ln=1
 	for line in page.splitlines():
-		if "." in line:
+		if ln==3:
+			line=line.replace("#","").replace("v ","")
 			print "Actual version:",bcolors.BOLD+bcolors.OKGREEN+line+bcolors.ENDC
 			if line==av:
 				print "Your version:",bcolors.BOLD+bcolors.OKGREEN+av
@@ -34,7 +35,7 @@ try:
 				print "Your version:",bcolors.BOLD+bcolors.FAIL+av+bcolors.ENDC
 				while True:
 					up=raw_input("Update? [y or n]: ")
-					if up=="y" or up=="yes":
+					if up.upper()=="Y" or up.upper()=="YES":
 						if platform.system()=="Linux":
 							try:
 								print "Update..."
@@ -51,11 +52,13 @@ try:
 							print "Go here for download:"
 							print "https://github.com/BlackFireFox/GitHub-CLI"
 							sys.exit()
-					elif up=="n" or "no":
+					elif up.upper()=="N" or up.upper()=="NO":
 						print "Don't update."
 						sys.exit()
 					else:
 						print "Error. Retry."
+		else:
+			ln+=1
 except urllib2.HTTPError, e:
 	print "Error:"
 	print(e.code)
