@@ -65,7 +65,7 @@ while e1==0:
 		print " "*((columns/2)-(len(cstr)/2))+cstr
 	q=raw_input()
 	link="https://github.com"
-	url=link+"/search?q="+q
+	url=link+"/search?q="+(q.replace(" ","+"))
 	cls()
 	print "Connecting...\r",
 	sys.stdout.flush()
