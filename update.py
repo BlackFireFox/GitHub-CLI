@@ -15,7 +15,7 @@ for line in code.splitlines():
 		break
 	else:
 		ln=ln+1
-vl="https://raw.githubusercontent.com/BlackFireFox/GitHub-CLI/master/githubcli"
+vl="https://raw.githubusercontent.com/Bytezz/GitHub-CLI/master/githubcli"
 print "Connecting..."
 try:
 	urllib2.urlopen(vl)
@@ -38,18 +38,18 @@ try:
 						if platform.system()=="Linux":
 							try:
 								print "Update..."
-								os.system("git clone https://github.com/BlackFireFox/GitHub-CLI temp && cd temp/ && mv ../temp/* .. && rm -rf ../temp && make reinstall")
+								os.system("git clone https://github.com/Bytezz/GitHub-CLI temp && cd temp/ && mv ../temp/* .. && rm -rf ../temp && make reinstall")
 								print "(If reinstall not completed, type:)"
 								print "sudo make reinstall"
 								print "Completed."
 							except:
 								print "Git not installed."
 								print "Go here for download:"
-								print "https://github.com/BlackFireFox/GitHub-CLI"
+								print "https://github.com/Bytezz/GitHub-CLI"
 							sys.exit()
 						else:
 							print "Go here for download:"
-							print "https://github.com/BlackFireFox/GitHub-CLI"
+							print "https://github.com/Bytezz/GitHub-CLI"
 							sys.exit()
 					elif up.upper()=="N" or up.upper()=="NO":
 						print "Don't update."

@@ -1,6 +1,6 @@
 <center><h1>GitHub-CLI</h1></center>
 
-This is a FreeWare developed by [BlackFireFox](https://github.com/blackfirefox).<br>
+This is a FreeWare developed by [Bytezz](https://github.com/Bytezz).<br>
 <b>GitHub-CLI</b> creates the possibility to navigate in github from terminal.
 
 ***
@@ -12,6 +12,14 @@ This is a FreeWare developed by [BlackFireFox](https://github.com/blackfirefox).
 ### Uninstallation (linux)
 
 `sudo make uninstall`
+
+### Reinstall (linux)
+
+`sudo make reinstall`
+
+### Update
+
+`python update.py`
 
 ### Usage
 
