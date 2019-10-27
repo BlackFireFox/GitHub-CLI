@@ -94,6 +94,8 @@ while e1==0:
 			results[i]["name"]="".join(re.findall(r'>(.*?)<',"".join(re.findall(r'<a class="v-align-middle"(.*?)</a>',raw))+"<"))
 			if '<span itemprop="programmingLanguage">' in raw:
 				results[i]["lang"]="".join(re.findall(r'<span itemprop="programmingLanguage">(.*?)</span>',raw))
+			else:
+				results[i]["lang"]==""
 			if '<svg aria-label="star"' in raw:
 				results[i]["star"]="".join(re.findall(r'6z"/></svg>(.*?)</a>',raw))
 			else:
@@ -137,6 +139,8 @@ while e1==0:
 								results[i]["name"]="".join(re.findall(r'>(.*?)<',"".join(re.findall(r'<a class="v-align-middle"(.*?)</a>',raw))+"<"))
 								if '<span itemprop="programmingLanguage">' in raw:
 									results[i]["lang"]="".join(re.findall(r'<span itemprop="programmingLanguage">(.*?)</span>',raw))
+								else:
+									results[i]["lang"]==""
 								if '<svg aria-label="star"' in raw:
 									results[i]["star"]="".join(re.findall(r'6z"/></svg>(.*?)</a>',raw))
 								else:
@@ -171,6 +175,8 @@ while e1==0:
 									results[i]["name"]="".join(re.findall(r'>(.*?)<',"".join(re.findall(r'<a class="v-align-middle"(.*?)</a>',raw))+"<"))
 									if '<span itemprop="programmingLanguage">' in raw:
 										results[i]["lang"]="".join(re.findall(r'<span itemprop="programmingLanguage">(.*?)</span>',raw))
+									else:
+										results[i]["lang"]==""
 									if '<svg aria-label="star"' in raw:
 										results[i]["star"]="".join(re.findall(r'6z"/></svg>(.*?)</a>',raw))
 									else:
