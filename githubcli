@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#v 0.3#
+#v 0.4#
 import urllib,urllib2,re,time,datetime,os,sys
 class bcolors:
 	HEADER = '\033[95m'
@@ -52,7 +52,7 @@ while e1==0:
 	if columns>=58:
 		sp=(columns-58)/2
 		print bcolors.BOLD+bcolors.OKBLUE+" "*sp+"              ,,                                 ,,"
-		print " "*sp+"  .g8'''bgd   db   mm   `7MMF'  `7MMF'  v 0.3   *MM"
+		print " "*sp+"  .g8'''bgd   db   mm   `7MMF'  `7MMF'  v 0.4   *MM"
 		print " "*sp+".dP'     `M        MM     MM      MM             MM"
 		print " "*sp+"dM'       ` `7MM mmMMmm   MM      MM `7MM  `7MM  MM,dMMb."
 		print " "*sp+"MM            MM   MM     MMmmmmmmMM   MM    MM  MM    `Mb"
@@ -61,9 +61,9 @@ while e1==0:
 		print " "*sp+"  `'bmmmdPY .JMML. `Mbmo.JMML.  .JMML. `Mbod'YML.P^YbmdP'"+bcolors.ENDC
 	else:
 		print "\n"*((rows/2)-2)
-		cstr="(v 0.3) Search"
+		cstr="(v 0.4) Search"
 		print " "*((columns/2)-(len(cstr)/2))+cstr
-	q=raw_input()
+	q=raw_input("\n"+" "*(columns/4)+"> ")
 	link="https://github.com"
 	url=link+"/search?q="+(q.replace(" ","+"))
 	cls()
@@ -84,45 +84,21 @@ while e1==0:
 			elif 'repository results' in line:
 				allresnm=''.join(filter(str.isdigit,line))
 				break
-		links=re.findall(r'<a(.*?)</a>',page)
-		results=""
-		reslink=""
 		p=1
-		num=0
-		while num<len(links):
-			if 'class="v-align-middle"' in links[num]:
-				if results=="":
-					results="".join(re.findall(r'>(.*?)<',(str(links[num])+"<")))
-				else:
-					results=results+","+"".join(re.findall(r'>(.*?)<',(str(links[num])+"<")))
-				if reslink=="":
-					reslink="".join(re.findall(r'href="(.*?)"',(str(links[num]))))
-				else:
-					reslink=reslink+","+"".join(re.findall(r'href="(.*?)"',(str(links[num]))))
-			num+=1
-		results=results.replace("&#x2F;","/")
-		results=results.split(",")
-		reslink=reslink.split(",")
-		resnum=0
-		lan=re.findall(r'<div class="d-table-cell col-2 text-gray pt-2">(.*?)</div>',page.replace("\n",""))
-		num=0
-		while num<len(lan):
-			r=re.findall(r'<(.*?)>',lan[num])
-			try:
-				lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
-			except:
-				try:
-					lan[num]=lan[num].replace(r[0],"").replace("<","").replace(">","").replace(" ","")
-				except:
-					lan[num]=lan[num].replace("<","").replace(">","").replace(" ","")
-			num+=1
-		st=re.findall(r'<a class="muted-link"(.*?)</a>',page.replace("\n",""))
-		num=0
-		while num<len(st):
-			st[num]="<"+st[num]
-			r=re.findall(r'<(.*?)>',st[num])
-			st[num]=st[num].replace(r[0],"").replace(r[1],"").replace(r[2],"").replace(r[3],"").replace("<","").replace(">","").replace(" ","")
-			num+=1
+		rawresults=re.findall(r'<li class="repo-list-item d-flex flex-column flex-md-row flex-justify-start py-4 public source" >(.*?)</li>',page.replace("\n","").replace("\t","").replace("  ",""))
+		results={}
+		i=0
+		for raw in rawresults:
+			results[i]={}
+			results[i]["link"]="".join(re.findall(r'href="(.*?)"',"".join(re.findall(r'<a class="v-align-middle"(.*?)>',raw))+"<"))
+			results[i]["name"]="".join(re.findall(r'>(.*?)<',"".join(re.findall(r'<a class="v-align-middle"(.*?)</a>',raw))+"<"))
+			if '<span itemprop="programmingLanguage">' in raw:
+				results[i]["lang"]="".join(re.findall(r'<span itemprop="programmingLanguage">(.*?)</span>',raw))
+			if '<svg aria-label="star"' in raw:
+				results[i]["star"]="".join(re.findall(r'6z"/></svg>(.*?)</a>',raw))
+			else:
+				results[i]["star"]="0"
+			i+=1
 		e2=0
 		while e2==0:
 			if allresnm!="0":
@@ -131,20 +107,12 @@ while e1==0:
 				print bcolors.BOLD+bcolors.OKGREEN+"Searching for '"+q+"'"+bcolors.ENDC
 			resnum=0
 			while resnum<len(results):
-				l1=len(str(resnum)+" - "+results[resnum])
-				l2=len(lan[resnum])
-				try:
-					l3=len(st[resnum])
-					s=st[resnum]
-				except:
-					l3=4
-					s="Err."
 				if resnum%2==0:
-					print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s
+					print str(resnum)+" - "+results[resnum]["name"]+" "*(columns-(len(results[resnum]["name"])+len(results[resnum]["lang"])+len(results[resnum]["star"])+9))+results[resnum]["lang"],"- ★",results[resnum]["star"]
 				else:
-					print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s+bcolors.ENDC
+					print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]["name"]+" "*(columns-(len(results[resnum]["name"])+len(results[resnum]["lang"])+len(results[resnum]["star"])+9))+results[resnum]["lang"],"- ★",results[resnum]["star"]+bcolors.ENDC
 				resnum+=1
-			if '<div class="pagination" data-pjax="true">' in page:
+			if '<div class="d-flex d-md-inline-block pagination" data-pjax="true">' in page:
 				print "< page",p,">"
 			e=0
 			while e==0:
@@ -156,115 +124,71 @@ while e1==0:
 						print rq,"not valid."
 				except:
 					if rq==">":
-						if '<div class="pagination" data-pjax="true">' in page:
+						if '<div class="d-flex d-md-inline-block pagination" data-pjax="true">' in page:
 							p+=1
-							chp=urllib.urlopen(url+"&p="+str(p))
-							chp=chp.read()
-							chplk=re.findall(r'<a(.*?)</a>',chp)
-							results=[]
-							resnum=0
-							num2=0
-							while num2<len(chplk):
-								if 'class="v-align-middle"' in chplk[num2]:
-									results.append("".join(re.findall(r'>(.*?)<',(str(chplk[num2])+"<"))))
-									reslink.append("".join(re.findall(r'href="(.*?)"',(str(links[num2])))))
-								num2+=1
-							lan=[]
-							lan=re.findall(r'<div class="d-table-cell col-2 text-gray pt-2">(.*?)</div>',chp.replace("\n",""))
-							num=0
-							while num<len(lan):
-								r=re.findall(r'<(.*?)>',lan[num])
-								try:
-									lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
-								except:
-									try:
-										lan[num]=lan[num].replace(r[0],"").replace("<","").replace(">","").replace(" ","")
-									except:
-										lan[num]=lan[num].replace("<","").replace(">","").replace(" ","")
-								num+=1
-							st=re.findall(r'<a class="muted-link"(.*?)</a>',chp.replace("\n",""))
-							num=0
-							while num<len(st):
-								st[num]="<"+st[num]
-								r=re.findall(r'<(.*?)>',st[num])
-								st[num]=st[num].replace(r[0],"").replace(r[1],"").replace(r[2],"").replace(r[3],"").replace("<","").replace(">","").replace(" ","")
-								num+=1
+							site=urllib.urlopen(url+"&p="+str(p))
+							page=site.read()
+							rawresults=re.findall(r'<li class="repo-list-item d-flex flex-column flex-md-row flex-justify-start py-4 public source" >(.*?)</li>',page.replace("\n","").replace("\t","").replace("  ",""))
+							results={}
+							i=0
+							for raw in rawresults:
+								results[i]={}
+								results[i]["link"]="".join(re.findall(r'href="(.*?)"',"".join(re.findall(r'<a class="v-align-middle"(.*?)>',raw))+"<"))
+								results[i]["name"]="".join(re.findall(r'>(.*?)<',"".join(re.findall(r'<a class="v-align-middle"(.*?)</a>',raw))+"<"))
+								if '<span itemprop="programmingLanguage">' in raw:
+									results[i]["lang"]="".join(re.findall(r'<span itemprop="programmingLanguage">(.*?)</span>',raw))
+								if '<svg aria-label="star"' in raw:
+									results[i]["star"]="".join(re.findall(r'6z"/></svg>(.*?)</a>',raw))
+								else:
+									results[i]["star"]="0"
+								i+=1
 							cls()
 							if allresnm!="0":
 								print bcolors.BOLD+bcolors.OKGREEN+allresnm,"results for '"+q+"'"+bcolors.ENDC
 							else:
 								print bcolors.BOLD+bcolors.OKGREEN+"Searching for '"+q+"'"+bcolors.ENDC
+							resnum=0
 							while resnum<len(results):
-								l1=len(str(resnum)+" - "+results[resnum])
-								l2=len(lan[resnum])
-								try:
-									l3=len(st[resnum])
-									s=st[resnum]
-								except:
-									l3=4
-									s="Err."
 								if resnum%2==0:
-									print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s
+									print str(resnum)+" - "+results[resnum]["name"]+" "*(columns-(len(results[resnum]["name"])+len(results[resnum]["lang"])+len(results[resnum]["star"])+9))+results[resnum]["lang"],"- ★",results[resnum]["star"]
 								else:
-									print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s+bcolors.ENDC
+									print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]["name"]+" "*(columns-(len(results[resnum]["name"])+len(results[resnum]["lang"])+len(results[resnum]["star"])+9))+results[resnum]["lang"],"- ★",results[resnum]["star"]+bcolors.ENDC
 								resnum+=1
-							if '<div class="pagination" data-pjax="true">' in chp:
+							if '<div class="d-flex d-md-inline-block pagination" data-pjax="true">' in page:
 								print "< page",p,">"
 					elif rq=="<":
-						if '<div class="pagination" data-pjax="true">' in page:
+						if '<div class="d-flex d-md-inline-block pagination" data-pjax="true">' in page:
 							if p>1:
 								p-=1
-								chp=urllib.urlopen(url+"&p="+str(p))
-								chp=chp.read()
-								chplk=re.findall(r'<a(.*?)</a>',chp)
-								results=[]
-								resnum=0
-								num2=0
-								while num2<len(chplk):
-									if 'class="v-align-middle"' in chplk[num2]:
-										results.append("".join(re.findall(r'>(.*?)<',(str(chplk[num2])+"<"))))
-										reslink.append("".join(re.findall(r'href="(.*?)"',(str(links[num2])))))
-									num2+=1
-									lan=[]
-									lan=re.findall(r'<div class="d-table-cell col-2 text-gray pt-2">(.*?)</div>',chp.replace("\n",""))
-									num=0
-									while num<len(lan):
-										r=re.findall(r'<(.*?)>',lan[num])
-										try:
-											lan[num]=lan[num].replace(r[0],"").replace(r[1],"").replace("<","").replace(">","").replace(" ","")
-										except:
-											try:
-												lan[num]=lan[num].replace(r[0],"").replace("<","").replace(">","").replace(" ","")
-											except:
-												lan[num]=lan[num].replace("<","").replace(">","").replace(" ","")
-										num+=1
-									st=re.findall(r'<a class="muted-link"(.*?)</a>',page.replace("\n",""))
-									num=0
-									while num<len(st):
-										st[num]="<"+st[num]
-										r=re.findall(r'<(.*?)>',st[num])
-										st[num]=st[num].replace(r[0],"").replace(r[1],"").replace(r[2],"").replace(r[3],"").replace("<","").replace(">","").replace(" ","")
-										num+=1
+								site=urllib.urlopen(url+"&p="+str(p))
+								page=site.read()
+								rawresults=re.findall(r'<li class="repo-list-item d-flex flex-column flex-md-row flex-justify-start py-4 public source" >(.*?)</li>',page.replace("\n","").replace("\t","").replace("  ",""))
+								results={}
+								i=0
+								for raw in rawresults:
+									results[i]={}
+									results[i]["link"]="".join(re.findall(r'href="(.*?)"',"".join(re.findall(r'<a class="v-align-middle"(.*?)>',raw))+"<"))
+									results[i]["name"]="".join(re.findall(r'>(.*?)<',"".join(re.findall(r'<a class="v-align-middle"(.*?)</a>',raw))+"<"))
+									if '<span itemprop="programmingLanguage">' in raw:
+										results[i]["lang"]="".join(re.findall(r'<span itemprop="programmingLanguage">(.*?)</span>',raw))
+									if '<svg aria-label="star"' in raw:
+										results[i]["star"]="".join(re.findall(r'6z"/></svg>(.*?)</a>',raw))
+									else:
+										results[i]["star"]="0"
+									i+=1
 								cls()
 								if allresnm!="0":
 									print bcolors.BOLD+bcolors.OKGREEN+allresnm,"results for '"+q+"'"+bcolors.ENDC
 								else:
 									print bcolors.BOLD+bcolors.OKGREEN+"Searching for '"+q+"'"+bcolors.ENDC
+								resnum=0
 								while resnum<len(results):
-									l1=len(str(resnum)+" - "+results[resnum])
-									l2=len(lan[resnum])
-									try:
-										l3=len(st[resnum])
-										s=st[resnum]
-									except:
-										l3=4
-										s="Err."
 									if resnum%2==0:
-										print str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s
+										print str(resnum)+" - "+results[resnum]["name"]+" "*(columns-(len(results[resnum]["name"])+len(results[resnum]["lang"])+len(results[resnum]["star"])+9))+results[resnum]["lang"],"- ★",results[resnum]["star"]
 									else:
-										print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]+" "*(columns-(l1+l2+l3+5))+lan[resnum],"- ★",s+bcolors.ENDC
+										print bcolors.BW+bcolors.BL+str(resnum)+" - "+results[resnum]["name"]+" "*(columns-(len(results[resnum]["name"])+len(results[resnum]["lang"])+len(results[resnum]["star"])+9))+results[resnum]["lang"],"- ★",results[resnum]["star"]+bcolors.ENDC
 									resnum+=1
-								if '<div class="pagination" data-pjax="true">' in chp:
+								if '<div class="d-flex d-md-inline-block pagination" data-pjax="true">' in page:
 									print "< page",p,">"
 							else:
 								print rq,"not valid."
@@ -276,7 +200,7 @@ while e1==0:
 						n=results[int(rq[2])]
 						n=n.split("/")
 						n=n[1]
-						dl(link+reslink[int(rq[2])],n)
+						dl(link+results[int(rq[2])]["link"],n)
 					elif "HELP" in rq.upper():
 						print "help       show this\nexit()     exit\ns          new search\n<          page-1\n>          page+1\nd $num     download $num"
 					elif rq=="exit()":
@@ -292,8 +216,8 @@ while e1==0:
 				print "Connecting...\r",
 				sys.stdout.flush()
 				try:
-					urllib2.urlopen(link+reslink[rq])
-					site2=urllib.urlopen(link+reslink[rq])
+					urllib2.urlopen(link+results[rq]["link"])
+					site2=urllib.urlopen(link+results[rq]["link"])
 					page2=site2.read()
 					fn=""
 					fnlk=""
@@ -315,7 +239,7 @@ while e1==0:
 					e3=0
 					while e3==0:
 						fnnum=0
-						print bcolors.BOLD+bcolors.OKGREEN+results[rq]+bcolors.ENDC
+						print bcolors.BOLD+bcolors.OKGREEN+results[rq]["name"]+bcolors.ENDC
 						while fnnum<len(fn):
 							print str(fnnum)+" - "+fn[fnnum]
 							fnnum+=1
@@ -335,9 +259,9 @@ while e1==0:
 									e=1
 									cls()
 								elif fq=="d":
-									n=results[rq].split("/")
+									n=results[rq]["name"].split("/")
 									n=n[1]
-									dl(link+"/"+results[rq],n)
+									dl(link+"/"+results[rq]["name"],n)
 								elif fq=="r":
 									e=1
 								elif fq=="exit()":
@@ -364,7 +288,7 @@ while e1==0:
 								fc=fc.read()
 								e4=0
 								while e4==0:
-									print bcolors.BOLD+bcolors.OKGREEN+results[rq]+"/"+f+bcolors.ENDC
+									print bcolors.BOLD+bcolors.OKGREEN+results[rq]["name"]+"/"+f+bcolors.ENDC
 									print fc
 									print "< return   d download"
 									e=0
