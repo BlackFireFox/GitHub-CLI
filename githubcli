@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#v 0.6#
+#v 0.7#
 import urllib,urllib2,re,time,datetime,os,sys
 class bcolors:
 	HEADER = '\033[95m'
@@ -52,7 +52,7 @@ while e1==0:
 	if columns>=58:
 		sp=(columns-58)/2
 		print bcolors.BOLD+bcolors.OKBLUE+" "*sp+"              ,,                                 ,,"
-		print " "*sp+"  .g8'''bgd   db   mm   `7MMF'  `7MMF'  v 0.6   *MM"
+		print " "*sp+"  .g8'''bgd   db   mm   `7MMF'  `7MMF'  v 0.7   *MM"
 		print " "*sp+".dP'     `M        MM     MM      MM             MM"
 		print " "*sp+"dM'       ` `7MM mmMMmm   MM      MM `7MM  `7MM  MM,dMMb."
 		print " "*sp+"MM            MM   MM     MMmmmmmmMM   MM    MM  MM    `Mb"
@@ -61,7 +61,7 @@ while e1==0:
 		print " "*sp+"  `'bmmmdPY .JMML. `Mbmo.JMML.  .JMML. `Mbod'YML.P^YbmdP'"+bcolors.ENDC
 	else:
 		print "\n"*((rows/2)-2)
-		cstr="(v 0.6) Search"
+		cstr="(v 0.7) Search"
 		print " "*((columns/2)-(len(cstr)/2))+cstr
 	q=raw_input("\n"+" "*(columns/4)+"> ")
 	link="https://github.com"
@@ -95,7 +95,7 @@ while e1==0:
 			if '<span itemprop="programmingLanguage">' in raw:
 				results[i]["lang"]="".join(re.findall(r'<span itemprop="programmingLanguage">(.*?)</span>',raw))
 			else:
-				results[i]["lang"]==""
+				results[i]["lang"]=""
 			if '<svg aria-label="star"' in raw:
 				results[i]["star"]="".join(re.findall(r'6z"/></svg>(.*?)</a>',raw))
 			else:
@@ -140,7 +140,7 @@ while e1==0:
 								if '<span itemprop="programmingLanguage">' in raw:
 									results[i]["lang"]="".join(re.findall(r'<span itemprop="programmingLanguage">(.*?)</span>',raw))
 								else:
-									results[i]["lang"]==""
+									results[i]["lang"]=""
 								if '<svg aria-label="star"' in raw:
 									results[i]["star"]="".join(re.findall(r'6z"/></svg>(.*?)</a>',raw))
 								else:
@@ -176,7 +176,7 @@ while e1==0:
 									if '<span itemprop="programmingLanguage">' in raw:
 										results[i]["lang"]="".join(re.findall(r'<span itemprop="programmingLanguage">(.*?)</span>',raw))
 									else:
-										results[i]["lang"]==""
+										results[i]["lang"]=""
 									if '<svg aria-label="star"' in raw:
 										results[i]["star"]="".join(re.findall(r'6z"/></svg>(.*?)</a>',raw))
 									else:
